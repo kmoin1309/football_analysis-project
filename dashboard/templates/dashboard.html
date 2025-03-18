@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Match Analysis Dashboard</h1>
+            <p class="lead text-muted">Real-time football match statistics and analysis</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Football Match Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="upload-section text-center p-4 border rounded">
+                                <h6>Input Video</h6>
+                                <form id="videoUploadForm" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <input type="file" class="form-control" id="videoFile" name="video" accept=".mp4,.avi,.mov">
+                                    </div>
+                                    <div class="preview-container mt-3 mb-3">
+                                        <video id="inputPreview" controls style="max-width: 100%; {% if not input_video_url %}display: none;{% endif %}">
+                                            <source src="{{ input_video_url }}" type="video/mp4">
+                                        </video>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" id="processBtn">Process Video</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="result-section text-center p-4 border rounded">
+                                <h6>Processed Output</h6>
+                                <div class="processing-status d-none">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <p class="status-text">Processing: <span>0%</span></p>
+                                    <div class="detection-status mt-2">
+                                        <small class="text-muted">Last detection: <span>-</span></small>
+                                    </div>
+                                </div>
+                                <div class="output-container mt-3">
+                                    <video id="outputVideo" controls style="max-width: 100%; {% if not output_video_url %}display: none;{% endif %}">
+                                        <source src="{{ output_video_url }}" type="video/mp4">
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4" id="team-performance">
+            <div class="card">
+                <div class="card-header">Team Performance</div>
+                <div class="card-body plot-container">
+                    {{ team_performance | safe }}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4" id="player-stats">
+            <div class="card">
+                <div class="card-header">Player Statistics</div>
+                <div class="card-body plot-container">
+                    {{ player_stats | safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+    os.makedirs(os.path.join(app.static_folder, 'uploads'), exist_ok=True)
+</script>
+{% endblock %}
